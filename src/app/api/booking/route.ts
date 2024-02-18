@@ -1,4 +1,4 @@
-import Bookings from '../../../models/Bokings'
+import Booking from '../../../models/Bokings'
 import { NextRequest, NextResponse } from 'next/server'
 import { connect } from '@/database/dbConfig'
 import formattedDate from '@/utils/todayDate'
@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
         console.log(reqBody)
         let { Show, MovieId, Date, seats } = reqBody
 
-        let existingShow = await Bookings.findOneAndUpdate(
+        let existingShow = await Booking.findOneAndUpdate(
             { date: formattedDate, movieId: MovieId }, 
             { $push: { seats: { $each: seats } } }, 
             { new: true } // Set to true to return the modified document rather than the original
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         }
         else{
             console.log("show dosent exist");
-            const newBooking = new Bookings({
+            const newBooking = new Booking({
                 showtime: Show,
                 movieId: MovieId,
                 date: Date,
