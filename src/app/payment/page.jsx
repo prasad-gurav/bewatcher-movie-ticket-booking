@@ -5,38 +5,36 @@ import { BookingContx } from '@/context/BookingContext'
 import QRCodeComponent from '@/components/QrCode'
 import { IoMdDoneAll } from "react-icons/io";
 import { motion } from 'framer-motion'
-
+import ErrorPage from '@/components/ErrorPage';
 import { movies_data } from '@/sample/data';
 import Spinner from '@/components/Spinner'
 
 
 export default function PaymentPage() {
   const router = useRouter()
+  if (!router.isFallback) {
+    return <ErrorPage statusCode={404} />
+}
 
   const [loading, setLoading] = useState(false);
   const [emailId, setEmailId] = useState();
 
-  const { selectedSeats, handleReset, movieId } = useContext(BookingContx);
+  const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
   const [paymentId, setPaymentId] = useState(null);
 
   if (selectedSeats.length === 0 && paymentId === null) {
     console.log(selectedSeats.length)
     router.push('/movies')
   }
-
-
-
   const makePayment = async () => {
     setLoading(true)
     console.log("here...");
     console.log(emailId)
     const res = await initializeRazorpay();
-
     if (!res) {
       alert("Razorpay SDK Failed to load");
       return;
     }
-
     // Make API call to the serverless API
     const data = await fetch("/api/razorpay", { method: "POST" }, {
       headers: {
@@ -74,16 +72,11 @@ export default function PaymentPage() {
         contact: "9561242048",
       },
     };
-    useEffect(() => {
-      // Check if window is defined (i.e., we're in the client-side context)
-      if (typeof window !== 'undefined') {
-        const paymentObject = new window.Razorpay(options);
-        paymentObject.open();
-        paymentObject.on("payment.failed", function (response) {
-          alert("Payment failed. Please try again. Contact support for help");
-        });
-      }
-    }, []); // Empty
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+    paymentObject.on("payment.failed", function (response) {
+      alert("Payment failed. Please try again. Contact support for help");
+    });
 
   };
   const initializeRazorpay = () => {
@@ -134,7 +127,7 @@ export default function PaymentPage() {
             {selectedSeats.length > 0 ? <QRCodeComponent value={selectedSeats.toString()} size={256} /> : <></>}
           </div>
         </>}
-
+  
     </>
   );
 }
