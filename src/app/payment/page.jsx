@@ -8,7 +8,7 @@ import { motion } from 'framer-motion'
 
 import { movies_data } from '@/sample/data';
 import Spinner from '@/components/Spinner'
-import { Suspense } from 'react'
+
 
 export default function PaymentPage() {
   const router = useRouter()
@@ -18,7 +18,7 @@ export default function PaymentPage() {
 
   const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
   const [paymentId, setPaymentId] = useState(null);
-  
+
   if (selectedSeats.length === 0 && paymentId === null) {
     console.log(selectedSeats.length)
     router.push('/movies')
@@ -74,8 +74,6 @@ export default function PaymentPage() {
         contact: "9561242048",
       },
     };
-
-
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
     paymentObject.on("payment.failed", function (response) {
@@ -100,7 +98,7 @@ export default function PaymentPage() {
   console.log(paymentId)
   return (
     <>
-      <Suspense>
+
       {paymentId === null ?
         <div className='w-[90%] md:w-[60%] mx-auto flex flex-col  border-2 border-gray-600 p-6 gap-4 font-lato my-5'>
           <h2 className='text-2xl font-lato text-center text-gray-500'>Get Your Ticket</h2>
@@ -131,7 +129,7 @@ export default function PaymentPage() {
             {selectedSeats.length > 0 ? <QRCodeComponent value={selectedSeats.toString()} size={256} /> : <></>}
           </div>
         </>}
-        </Suspense>
+  
     </>
   );
 }

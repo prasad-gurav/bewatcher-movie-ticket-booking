@@ -8,7 +8,7 @@ import CinemaLottie from '@/components/CinemaLottie'
 import { BookingContx } from '@/context/BookingContext'
 import { useRouter } from 'next/navigation'
 
-import { Suspense } from 'react'
+
 
 export default function AudiPage() {
     const router = useRouter()
@@ -24,13 +24,13 @@ export default function AudiPage() {
         <div id='audi'>
 
             {showTime === null ? <ShowTimes handler={handleSetShow} /> : <></>}
-            <Suspense>
+  
             <div id="moveiCard" className='relative h-[35vh] md:h-[40vh] md:w-[30%] mx-auto overflow-y-hidden'>
                 <img id="movie-poster" className='w-[70vw] translate-x-[-50%] absolute left-[50%] -z-10 rounded-xl'
                     src={`https://image.tmdb.org/t/p/w500${movies_data[Number(movieId)].poster_path}`} alt="" />
                 <h2 className='text-6xl text-center py-4'></h2>
             </div>
-            </Suspense>
+
             <div className="screen h-[80px] md:h-[200px]  w-[80%] md:w-[60%] mx-auto border-t-2 border-t-blue-500 rounded-full"></div>
             <div className='md:relative'>
 
