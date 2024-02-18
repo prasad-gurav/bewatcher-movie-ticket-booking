@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -7,6 +8,13 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily:{
+        poppins : ['Poppins','sans-serif'],
+        josefin : ['Unbounded', 'cursive'],
+        lato :['Lato', 'sans-serif'],
+        manrope : ['Manrope', 'sans-serif'],
+        visbylight :['visby-heavy','sans-serif']
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
@@ -16,3 +24,4 @@ module.exports = {
   },
   plugins: [],
 };
+export default config;

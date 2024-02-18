@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=Lato:ital,wght@1,300&family=Manrope:wght@600&family=Poppins:wght@200&family=Roboto&family=Unbounded&display=swap');
+
+
+@font-face {
+  font-family: "visby-light";
+  src: local("OpenSans"), url("/assets/fonts/VisbyCF-Heavy.ttf") format("truetype");
+}
+.local {
+  font-family: "visby-heavy", sans-serif;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,4 +41,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+#moveiCard{
+  background: linear-gradient(358deg, black, transparent)!important;
 }
