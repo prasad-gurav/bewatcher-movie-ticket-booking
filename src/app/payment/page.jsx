@@ -14,19 +14,17 @@ export default function PaymentPage() {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false);
-
-
   const [emailId, setEmailId] = useState();
 
   const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
-
+  const [paymentId, setPaymentId] = useState(null);
+  
   if (selectedSeats.length === 0 && paymentId === null) {
     console.log(selectedSeats.length)
     router.push('/movies')
-    
   }
 
-  const [paymentId, setPaymentId] = useState(null);
+  
 
   const makePayment = async () => {
     setLoading(true)
