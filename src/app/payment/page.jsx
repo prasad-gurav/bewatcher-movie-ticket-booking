@@ -5,7 +5,7 @@ import { BookingContx } from '@/context/BookingContext'
 import QRCodeComponent from '@/components/QrCode'
 import { IoMdDoneAll } from "react-icons/io";
 import { motion } from 'framer-motion'
-import { useSearchParams } from 'next/navigation'
+
 import { movies_data } from '@/sample/data';
 import Spinner from '@/components/Spinner'
 import { Suspense } from 'react'
@@ -13,15 +13,12 @@ import { Suspense } from 'react'
 export default function PaymentPage() {
   const router = useRouter()
 
-  const searchParams = useSearchParams()
-  const movieId = searchParams.get('id')
-
   const [loading, setLoading] = useState(false);
 
 
   const [emailId, setEmailId] = useState();
 
-  const { selectedSeats,handleReset } = useContext(BookingContx);
+  const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
 
   if (selectedSeats.length === 0 && paymentId === null) {
     console.log(selectedSeats.length)

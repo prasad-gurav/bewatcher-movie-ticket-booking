@@ -1,23 +1,19 @@
 "use client"
 import React, { useState, useContext, MouseEvent } from 'react'
-import { useSearchParams } from 'next/navigation'
+
 import RowSeats from '@/components/RowSeats'
 import { movies_data } from '@/sample/data'
 import ShowTimes from '@/components/ShowTimes'
 import CinemaLottie from '@/components/CinemaLottie'
 import { BookingContx } from '@/context/BookingContext'
 import { useRouter } from 'next/navigation'
-import Spinner from '@/components/Spinner'
+
 import { Suspense } from 'react'
 
 export default function AudiPage() {
     const router = useRouter()
-    const searchParams = useSearchParams()
-    const movieId = searchParams.get('movie_id')
 
-    const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow } = useContext(BookingContx);
-
-    
+    const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId } = useContext(BookingContx);
 
     const handlePayNow = (e:MouseEvent<HTMLButtonElement>,seats:string[])=>{
         console.log(seats)
