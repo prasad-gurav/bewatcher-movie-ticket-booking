@@ -1,4 +1,4 @@
-import Bookings from '../../models/Bokings'
+import Bookings from '../../../models/Bokings'
 import { NextRequest, NextResponse } from 'next/server'
 import { connect } from '@/database/dbConfig'
 import formattedDate from '@/utils/todayDate'
