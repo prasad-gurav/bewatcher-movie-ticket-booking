@@ -14,9 +14,9 @@ export default function PaymentPage() {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false);
-  const [emailId, setEmailId] = useState();
+  const [emailId, setEmailId] = useState(null);
 
-  const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
+  const { selectedSeats, handleReset, movieId } = useContext(BookingContx);
   const [paymentId, setPaymentId] = useState(null);
 
   if (selectedSeats.length === 0 && paymentId === null) {
@@ -24,7 +24,7 @@ export default function PaymentPage() {
     router.push('/movies')
   }
 
-  
+
 
   const makePayment = async () => {
     setLoading(true)
@@ -75,10 +75,12 @@ export default function PaymentPage() {
       },
     };
     const paymentObject = new window.Razorpay(options);
-    paymentObject.open();
-    paymentObject.on("payment.failed", function (response) {
-      alert("Payment failed. Please try again. Contact support for help");
-    });
+    if (paymentObject !== undefined | null) {
+      paymentObject.open();
+      paymentObject.on("payment.failed", function (response) {
+        alert("Payment failed. Please try again. Contact support for help");
+      });
+    }
 
   };
   const initializeRazorpay = () => {
@@ -129,7 +131,7 @@ export default function PaymentPage() {
             {selectedSeats.length > 0 ? <QRCodeComponent value={selectedSeats.toString()} size={256} /> : <></>}
           </div>
         </>}
-  
+
     </>
   );
 }
