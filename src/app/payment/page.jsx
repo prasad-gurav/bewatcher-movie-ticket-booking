@@ -14,7 +14,7 @@ export default function PaymentPage() {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false);
-  const [emailId, setEmailId] = useState(null);
+  const [emailId, setEmailId] = useState();
 
   const { selectedSeats, handleReset, movieId } = useContext(BookingContx);
   const [paymentId, setPaymentId] = useState(null);
@@ -74,13 +74,16 @@ export default function PaymentPage() {
         contact: "9561242048",
       },
     };
-    const paymentObject = new window.Razorpay(options);
-    if (paymentObject !== undefined | null) {
-      paymentObject.open();
-      paymentObject.on("payment.failed", function (response) {
-        alert("Payment failed. Please try again. Contact support for help");
-      });
-    }
+    useEffect(() => {
+      // Check if window is defined (i.e., we're in the client-side context)
+      if (typeof window !== 'undefined') {
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+        paymentObject.on("payment.failed", function (response) {
+          alert("Payment failed. Please try again. Contact support for help");
+        });
+      }
+    }, []); // Empty
 
   };
   const initializeRazorpay = () => {
