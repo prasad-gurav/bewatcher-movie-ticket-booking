@@ -78,16 +78,10 @@ export default function PaymentPage() {
       },
     };
     const paymentObject = new window.Razorpay(options);
-    if (typeof paymentObject !== 'undefined') {
-      // router.push("/payment" + response.razorpay_payment_id);
-      console.log('error found')
-    } else {
-      // Handle server-side navigation or data fetching here
-      paymentObject.open();
-      paymentObject.on("payment.failed", function (response) {
+    paymentObject.open();
+    paymentObject.on("payment.failed", function (response) {
         alert("Payment failed. Please try again. Contact support for help");
-      });
-    }
+    });
    
 
   };
