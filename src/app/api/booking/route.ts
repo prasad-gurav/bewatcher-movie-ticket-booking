@@ -1,4 +1,4 @@
-import Booking from '../../../models/Bokings'
+import Booking from '@/models/Bokings'
 import { NextRequest, NextResponse } from 'next/server'
 import { connect } from '@/database/dbConfig'
 import formattedDate from '@/utils/todayDate'
@@ -8,11 +8,12 @@ connect()
 export async function POST(request: NextRequest) {
     try {
         let reqBody = await request.json()
-        console.log(reqBody)
-        let { Show, MovieId, Date, seats } = reqBody
+
+        console.log('data',reqBody)
+        let { Show, MovieId, showDate, seats } = reqBody
 
         let existingShow = await Booking.findOneAndUpdate(
-            { date: formattedDate, movieId: MovieId }, 
+            { date: showDate, movieId: MovieId }, 
             { $push: { seats: { $each: seats } } }, 
             { new: true } // Set to true to return the modified document rather than the original
         )
@@ -25,7 +26,7 @@ export async function POST(request: NextRequest) {
             const newBooking = new Booking({
                 showtime: Show,
                 movieId: MovieId,
-                date: Date,
+                date: showDate,
                 seats: seats
             })
             const bookingStat = await newBooking.save()
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
     catch (e: any) {
         return NextResponse.json({
-            data: "Something Went Wrong"
+            data: String(e)
         }, {
             status: 200,
         })

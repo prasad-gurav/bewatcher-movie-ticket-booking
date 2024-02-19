@@ -12,12 +12,11 @@ import { useRouter } from 'next/navigation'
 
 export default function AudiPage() {
     const router = useRouter()
-    console.log(router)
-    const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId,showDate,handleSetShowDate } = useContext(BookingContx);
-
+   
+    const { selectedSeats,bookedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId,showDate,handleSetShowDate } = useContext(BookingContx);
+    console.log(selectedSeats)
     const handlePayNow = (e:MouseEvent<HTMLButtonElement>,seats:string[])=>{
         console.log(seats)
-        
         router.push('/payment')
     }
 
@@ -35,7 +34,7 @@ export default function AudiPage() {
             <div className="screen h-[80px] md:h-[200px]  w-[80%] md:w-[60%] mx-auto border-t-2 border-t-blue-500 rounded-full"></div>
             <div className='md:relative'>
 
-                {showTime !== null ? <RowSeats selectedSeats={selectedSeats} handleSeatClick={handleSeatClick} /> : <><CinemaLottie /></>}
+                {showTime !== null ? <RowSeats bookedSeats={bookedSeats} selectedSeats={selectedSeats} handleSeatClick={handleSeatClick} /> : <><CinemaLottie /></>}
                 <div id="selected-seats" className='md:absolute bottom-0 h-[100%] md:max-w-[20%] left-0  p-4'>
                     {selectedSeats.length > 0 ?
                         <>

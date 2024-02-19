@@ -18,9 +18,10 @@ export default function RowSeats(props:any) {
 
                                 // check seat alreay booked/selected or not
                                 const isSeatSelected: boolean = (props.selectedSeats as string[]).includes(Object.keys(row)[0] + seat);
+                                const booked = props.bookedSeats.includes(Object.keys(row)[0] + seat)
                                 return (
                                     <div key={seatInex} className={`cursor-pointer ${isSeatSelected ? 'selected-seat' : ''}`}>
-                                        <MdEventSeat className={`${isSeatSelected ? 'text-blue-500' : ''}`} size={50} onClick={(e: MouseEvent<SVGElement>) => props.handleSeatClick(e, Object.keys(row)[0], seat)} />
+                                        <MdEventSeat className={`${isSeatSelected ? 'text-blue-500' : ''} ${booked ? 'text-red-500 pointer-events-none' : ''}`} size={50} onClick={(e: MouseEvent<SVGElement>) => props.handleSeatClick(e, Object.keys(row)[0], seat)} />
                                     </div>
                                 );
                             })

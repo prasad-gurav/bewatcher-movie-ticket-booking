@@ -1,9 +1,12 @@
 'use client'
 import React, { createContext, MouseEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { movies_data } from '@/sample/data'
 
 interface MyContextType {
     selectedSeats: string[];
+    bookedSeats: string[];
     showTime : string | null;
     movieId : number | null;
     showDate: string | null;
@@ -16,6 +19,7 @@ interface MyContextType {
 }
 const defaultContextValue: MyContextType = {
     selectedSeats: [],
+    bookedSeats:[],
     showTime : null,
     movieId:null,
     showDate : null,
@@ -39,6 +43,22 @@ export default function BookingContext(props:Props) {
     const [selectedSeats, setSelectedSeats] = React.useState<string[]>([]);
     const [showTime, setShowTime] = React.useState<string | null>(null);
     const [showDate, setShowDate] = React.useState<string | null>(null)
+    const [bookedSeats, setBookedSeats] = React.useState<string[]>([]);
+
+    React.useEffect(()=>{
+        const getReservedSeats = async ()=>{
+            let data = {
+                Show:showTime,
+                MovieId:movies_data[Number(movieId)].original_title,
+                Date:showDate
+            }
+            let response = await axios.post('/api/booking/booked',data)
+            if(Array.isArray(response.data.data)){
+                setBookedSeats(response.data.data)
+            }
+        }
+        getReservedSeats()
+    },[showTime])
 
     const handleSetShowDate = (e:MouseEvent<HTMLButtonElement>,date:string)=>{
         setShowDate(date)
@@ -73,6 +93,7 @@ export default function BookingContext(props:Props) {
     
     const contextValue: MyContextType = {
         selectedSeats: selectedSeats,
+        bookedSeats:bookedSeats,
         handleSeatClick: handleSeatClick,
         handleClear:handleClear,
         showTime:showTime,
