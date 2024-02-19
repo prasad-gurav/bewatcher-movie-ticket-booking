@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from 'next/navigation'
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,Suspense } from 'react';
 import { BookingContx } from '@/context/BookingContext'
 import QRCodeComponent from '@/components/QrCode'
 import { IoMdDoneAll } from "react-icons/io";
@@ -18,18 +18,21 @@ export default function PaymentPage() {
   }
 
   const [loading, setLoading] = useState(false);
-  const [emailId, setEmailId] = useState();
+
+  const [emailId, setEmailId] = useState(null);
 
   const { selectedSeats,handleReset,movieId } = useContext(BookingContx);
   const [paymentId, setPaymentId] = useState(null);
 
-  if (selectedSeats.length === 0 && paymentId === null) {
-    console.log(selectedSeats.length)
-    router.push('/movies')
-  }
+
+  React.useEffect(() => {
+    if (selectedSeats.length === 0 && paymentId === null) {
+      console.log(selectedSeats.length)
+      router.push('/')
+    }
+  }, []);
   const makePayment = async () => {
     setLoading(true)
-    console.log("here...");
     console.log(emailId)
     const res = await initializeRazorpay();
     if (!res) {
@@ -43,7 +46,7 @@ export default function PaymentPage() {
         // Add any additional headers if required
       },
     }).then((t) =>
-      t.json()
+      console.log(t)
     );
     console.log(data);
 
@@ -73,11 +76,18 @@ export default function PaymentPage() {
         contact: "9561242048",
       },
     };
-    const paymentObject = new window.Razorpay(options);
-    paymentObject.open();
-    paymentObject.on("payment.failed", function (response) {
-      alert("Payment failed. Please try again. Contact support for help");
-    });
+    const paymentObject = new Window.Razorpay(options);
+    if (typeof paymentObject !== 'undefined') {
+      // router.push("/payment" + response.razorpay_payment_id);
+      console.log('error found')
+    } else {
+      // Handle server-side navigation or data fetching here
+      paymentObject.open();
+      paymentObject.on("payment.failed", function (response) {
+        alert("Payment failed. Please try again. Contact support for help");
+      });
+    }
+   
 
   };
   const initializeRazorpay = () => {
@@ -94,10 +104,10 @@ export default function PaymentPage() {
       document.body.appendChild(script);
     });
   };
-  console.log(paymentId)
+
   return (
     <>
-
+      <Suspense>
       {paymentId === null ?
         <div className='w-[90%] md:w-[60%] mx-auto flex flex-col  border-2 border-gray-600 p-6 gap-4 font-lato my-5'>
           <h2 className='text-2xl font-lato text-center text-gray-500'>Get Your Ticket</h2>
@@ -128,7 +138,7 @@ export default function PaymentPage() {
             {selectedSeats.length > 0 ? <QRCodeComponent value={selectedSeats.toString()} size={256} /> : <></>}
           </div>
         </>}
-  
+        </Suspense>
     </>
   );
 }

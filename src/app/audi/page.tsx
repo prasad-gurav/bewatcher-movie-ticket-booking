@@ -12,11 +12,12 @@ import { useRouter } from 'next/navigation'
 
 export default function AudiPage() {
     const router = useRouter()
-
+    console.log(router)
     const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId,showDate,handleSetShowDate } = useContext(BookingContx);
 
     const handlePayNow = (e:MouseEvent<HTMLButtonElement>,seats:string[])=>{
         console.log(seats)
+        
         router.push('/payment')
     }
 
