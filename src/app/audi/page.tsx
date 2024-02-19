@@ -2,17 +2,19 @@
 import React, { useState, useContext, MouseEvent } from 'react'
 
 import RowSeats from '@/components/RowSeats'
-import { movies_data } from '@/sample/data'
+
 import ShowTimes from '@/components/ShowTimes'
 import CinemaLottie from '@/components/CinemaLottie'
 import { BookingContx } from '@/context/BookingContext'
 import { useRouter } from 'next/navigation'
+import { MovieContx } from '@/context/MoviesContext'
 
 
 
 export default function AudiPage() {
     const router = useRouter()
-   
+    const { movies_data } = useContext(MovieContx)
+
     const { selectedSeats,bookedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId,showDate,handleSetShowDate } = useContext(BookingContx);
     console.log(selectedSeats)
     const handlePayNow = (e:MouseEvent<HTMLButtonElement>,seats:string[])=>{
@@ -27,7 +29,7 @@ export default function AudiPage() {
   
             <div id="moveiCard" className='relative h-[35vh] md:h-[40vh] md:w-[30%] mx-auto overflow-y-hidden'>
                 <img id="movie-poster" className='w-[70vw] translate-x-[-50%] absolute left-[50%] -z-10 rounded-xl'
-                    src={`https://image.tmdb.org/t/p/w500${movies_data[Number(movieId)].poster_path}`} alt="" />
+                    src={`https://image.tmdb.org/t/p/w500${ movies_data && movies_data[Number(movieId)].poster_path}`} alt="" />
                 <h2 className='text-6xl text-center py-4'></h2>
             </div>
 

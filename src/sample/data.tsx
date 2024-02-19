@@ -1,3 +1,5 @@
+
+
 export const movies_data =  [
     {
       "adult": false,

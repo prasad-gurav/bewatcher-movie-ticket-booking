@@ -6,11 +6,13 @@ import QRCodeComponent from '@/components/QrCode'
 import { IoMdDoneAll } from "react-icons/io";
 import { motion } from 'framer-motion'
 import ErrorPage from '@/components/ErrorPage';
-import { movies_data } from '@/sample/data';
+import { MovieContx } from '@/context/MoviesContext'
 import Spinner from '@/components/Spinner'
 import axios from 'axios';
 
 export default function PaymentPage() {
+  const { movies_data } = useContext(MovieContx)
+
   const router = useRouter()
   if (router.isFallback) {
     console.log('fallback ')
@@ -21,17 +23,17 @@ export default function PaymentPage() {
 
   const [emailId, setEmailId] = useState(null);
 
-  const { selectedSeats,showTime, handleReset, movieId, showDate } = useContext(BookingContx);
+  const { selectedSeats, showTime, handleReset, movieId, showDate } = useContext(BookingContx);
 
   const [paymentId, setPaymentId] = useState(null);
 
   React.useEffect(() => {
-    const saveBooking = async () =>{
+    const saveBooking = async () => {
       let data = {
         Show: showTime,
         MovieId: movies_data[Number(movieId)].original_title,
         showDate: showDate,
-        seats:selectedSeats
+        seats: selectedSeats
       }
       let response = await axios.post('/api/booking', data)
       console.log(response)
@@ -122,8 +124,8 @@ export default function PaymentPage() {
         {paymentId === null ?
           <div className='w-[90%] md:w-[60%] mx-auto flex flex-col  border-2 border-gray-600 p-6 gap-4 font-lato my-5'>
             <h2 className='text-2xl font-lato text-center text-gray-500'>Get Your Ticket</h2>
-            <img className='w-[20%] rounded-md' src={`https://image.tmdb.org/t/p/w500${movies_data[Number(movieId)].poster_path}`} alt="" />
-            <h2 className='text-xl'>Movie : {movies_data[Number(movieId)].original_title}</h2>
+            <img className='w-[20%] rounded-md' src={`https://image.tmdb.org/t/p/w500${movies_data && movies_data[Number(movieId)].poster_path}`} alt="" />
+            <h2 className='text-xl'>Movie : {movies_data && movies_data[Number(movieId)].original_title}</h2>
             <h2>Seats : {selectedSeats.join(', ')}</h2>
             <p>Enter Your Email Here :</p>
             <input type="email" onChange={(e) => { setEmailId(e.target.value) }} name="" id="" className='w-full md:w-[70%] px-2 rounded-md bg-transparent border-2 border-white placeholder:font-poppins' placeholder='youremail@mail.com' />

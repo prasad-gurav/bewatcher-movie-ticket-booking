@@ -5,7 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 import BookingContx from "@/context/BookingContext";
-
+import MovieContx from "@/context/MoviesContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,11 +23,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Navbar />
+        <MovieContx>
           <BookingContx>
-          <div className="py-14 px-4">
-            {children}
-          </div>
+            <div className="py-14 px-4">
+              {children}
+            </div>
           </BookingContx>
+        </MovieContx>
       </body>
     </html>
   );
