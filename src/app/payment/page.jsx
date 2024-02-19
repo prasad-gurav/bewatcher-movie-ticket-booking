@@ -31,6 +31,7 @@ export default function PaymentPage() {
       router.push('/')
     }
   }, []);
+
   const makePayment = async () => {
     setLoading(true)
     console.log(emailId)
@@ -39,15 +40,15 @@ export default function PaymentPage() {
       alert("Razorpay SDK Failed to load");
       return;
     }
-    // Make API call to the serverless API
-    const data = await fetch("/api/razorpay", { method: "POST" }, {
-      headers: {
-        'Content-Type': 'application/json',
-        // Add any additional headers if required
-      },
-    }).then((t) =>
-      console.log(t)
-    );
+        // Make API call to the serverless API
+        const data = await fetch("/api/razorpay", { method: "POST" }, {
+          headers: {
+              'Content-Type': 'application/json',
+              // Add any additional headers if required
+          },
+      }).then((t) =>
+          t.json()
+      );
     console.log(data);
 
     var options = {
@@ -76,7 +77,7 @@ export default function PaymentPage() {
         contact: "9561242048",
       },
     };
-    const paymentObject = new Window.Razorpay(options);
+    const paymentObject = new window.Razorpay(options);
     if (typeof paymentObject !== 'undefined') {
       // router.push("/payment" + response.razorpay_payment_id);
       console.log('error found')
