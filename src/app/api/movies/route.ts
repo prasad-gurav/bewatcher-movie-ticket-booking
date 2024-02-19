@@ -9,9 +9,9 @@ export async function GET(request: NextRequest) {
 
         let headersList = {
             "accept": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNTIzYjlmYmU1OGViOTNmMDY3OTU5YjA2YTI5MmUxNyIsInN1YiI6IjY1YjkxNWFmOTBmY2EzMDE2MjA2NGE2ZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.mu0VLv2Ltxh8GPLV7CQVTJ6RhEB-ZoW_4Nb5LYDtyBc"
+            "Authorization": "Bearer "
         }
-        const movie_db_url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=hi-IN&page=1&sort_by=popularity.desc&with_release_type=2%7C3&release_date.gte=${fifteenDaysAgoFormatted}&release_date.lte=${todayFormatted}&api_key=f523b9fbe58eb93f067959b06a292e17&with_origin_country=IN`
+        const movie_db_url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=hi-IN&page=1&sort_by=popularity.desc&with_release_type=2%7C3&release_date.gte=${fifteenDaysAgoFormatted}&release_date.lte=${todayFormatted}&api_key=${process.env.MOVIE_DB_API_KEY}&with_origin_country=IN`
 
         let response = await fetch(movie_db_url, {
         method: "GET",
