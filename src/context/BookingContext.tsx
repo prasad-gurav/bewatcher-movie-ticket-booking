@@ -6,22 +6,25 @@ interface MyContextType {
     selectedSeats: string[];
     showTime : string | null;
     movieId : number | null;
+    showDate: string | null;
     handleSeatClick: (e: MouseEvent<SVGElement>, rowName: string, seatNumber: number) => void;
     handleClear : (e:MouseEvent<HTMLButtonElement>) => void;
     handleSetShow : (e:MouseEvent<HTMLButtonElement>,Time:string) => void;
     handleReset : () => void;
     handleSetMovie: (e:MouseEvent<HTMLButtonElement>,id:number) => void;
-
+    handleSetShowDate:(e:MouseEvent<HTMLButtonElement>,date:string) => void;
 }
 const defaultContextValue: MyContextType = {
     selectedSeats: [],
     showTime : null,
     movieId:null,
+    showDate : null,
     handleSeatClick: () => {},
     handleClear: () => {},
     handleSetShow: () => {},
     handleReset:() => {},
-    handleSetMovie:() => {}
+    handleSetMovie:() => {},
+    handleSetShowDate:() => {}
 };
 
 export const BookingContx = createContext<MyContextType>(defaultContextValue);
@@ -35,7 +38,11 @@ export default function BookingContext(props:Props) {
     const [movieId,setMovieId] = React.useState<number | null>(null)
     const [selectedSeats, setSelectedSeats] = React.useState<string[]>([]);
     const [showTime, setShowTime] = React.useState<string | null>(null);
+    const [showDate, setShowDate] = React.useState<string | null>(null)
 
+    const handleSetShowDate = (e:MouseEvent<HTMLButtonElement>,date:string)=>{
+        setShowDate(date)
+    }
     const handleSetShow = (e: MouseEvent<HTMLButtonElement>, Time: string) => {
         setShowTime(Time)
     }
@@ -72,8 +79,9 @@ export default function BookingContext(props:Props) {
         handleSetShow:handleSetShow,
         handleReset:handleReset,
         movieId:movieId,
-        handleSetMovie:handleSetMovie
-
+        handleSetMovie:handleSetMovie,
+        showDate:showDate,
+        handleSetShowDate:handleSetShowDate
     }
 
     return (

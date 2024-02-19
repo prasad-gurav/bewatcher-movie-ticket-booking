@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 export default function AudiPage() {
     const router = useRouter()
 
-    const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId } = useContext(BookingContx);
+    const { selectedSeats, handleSeatClick, handleClear,showTime,handleSetShow,movieId,showDate,handleSetShowDate } = useContext(BookingContx);
 
     const handlePayNow = (e:MouseEvent<HTMLButtonElement>,seats:string[])=>{
         console.log(seats)
@@ -23,7 +23,7 @@ export default function AudiPage() {
     return (
         <div id='audi'>
 
-            {showTime === null ? <ShowTimes handler={handleSetShow} /> : <></>}
+            {showTime === null ? <ShowTimes handler={handleSetShow} showDate={showDate} handleSetShowDate={handleSetShowDate} /> : <></>}
   
             <div id="moveiCard" className='relative h-[35vh] md:h-[40vh] md:w-[30%] mx-auto overflow-y-hidden'>
                 <img id="movie-poster" className='w-[70vw] translate-x-[-50%] absolute left-[50%] -z-10 rounded-xl'

@@ -12,9 +12,10 @@ import Spinner from '@/components/Spinner'
 
 export default function PaymentPage() {
   const router = useRouter()
-  if (!router.isFallback) {
+  if (router.isFallback) {
+    console.log('fallback ')
     return <ErrorPage statusCode={404} />
-}
+  }
 
   const [loading, setLoading] = useState(false);
   const [emailId, setEmailId] = useState();
