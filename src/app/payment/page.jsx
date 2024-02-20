@@ -37,6 +37,20 @@ export default function PaymentPage() {
       }
       let response = await axios.post('/api/booking', data)
       console.log(response)
+      try {
+        let data = {
+          EmailId : emailId,
+          movie_name: movies_data[Number(movieId)].original_title,
+          show: showTime,
+          show_date: showDate,
+          seats: selectedSeats,
+          movie_poster : movies_data[Number(movieId)].poster_path
+        }
+        axios.post('api/send-email', data)
+      } catch (error) {
+        console.log(error)
+      }
+
     }
     if (paymentId !== null) {
       saveBooking()
@@ -130,7 +144,7 @@ export default function PaymentPage() {
             <p>Enter Your Email Here :</p>
             <input type="email" onChange={(e) => { setEmailId(e.target.value) }} name="" id="" className='w-full md:w-[70%] px-2 rounded-md bg-transparent border-2 border-white placeholder:font-poppins' placeholder='youremail@mail.com' />
 
-            <button onClick={makePayment} className={`w-[40%] md:w-[30%] py-1 bg-blue-500 font-lato rounded-md `}>
+            <button onClick={makePayment} className={`w-[40%] md:w-[30%] py-1 bg-blue-500 font-lato rounded-md ${emailId == null ? 'pointer-events-none' : 'cursor-pointer'}`}>
               {loading ? <Spinner
               /> : <>Pay</>}
             </button>

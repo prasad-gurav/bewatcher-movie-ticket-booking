@@ -10,6 +10,7 @@ export async function POST(request: NextRequest){
         console.log(reqBody)
         let {Show, MovieId, Date} = reqBody
         let bookedSeats = await Booking.findOne({date : Date, movieId : MovieId,showtime: Show})
+        console.log('res',bookedSeats)
         if(bookedSeats){
             console.log(bookedSeats)
             return NextResponse.json({
