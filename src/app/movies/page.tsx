@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, MouseEvent, useEffect } from "react";
 
-import { useRouter } from "next/navigation";
+
 import { BookingContx } from "@/context/BookingContext";
 import { MovieContx } from "@/context/MoviesContext";
 
@@ -10,17 +10,10 @@ function MoviesPage() {
 
     const { movieId, handleSetMovie } = useContext(BookingContx);
 
-    const handleBookMyTicket = (
-        e: MouseEvent<HTMLButtonElement>,
-        movieId: number
-    ) => {
-        console.log(movieId);
-        // router.push("/audi?movie_id=" + movieId)
-    };
     return (
         <div className="flex flex-col w-[80%] mx-auto">
-            <h2 className="text-4xl py-4 px-10 font-manrope">Now Playing</h2>
-            <div className="flex flex-wrap gap-10 items-center px-10 py-4">
+   
+            <div className="flex flex-wrap gap-10 items-center justify-center py-4 my-8 mx-2">
                 {Array.isArray(movies_data) ? (
                     <>
                         {movies_data.map((movie: any, index: number) => (
