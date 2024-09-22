@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 
 function Navbar() {
   const [scrollY, setScrollY] = useState(0);
-
+  
     useEffect(() => {
         const handleScroll = () => {
             setScrollY(window.scrollY);
@@ -29,7 +29,7 @@ function Navbar() {
   >
     <Link href={'/'}> <MdLocalMovies size={48} /></Link>
     <h2>BeWatcher</h2>
-    <h2 className="text-4xl py-4 px-10 font-manrope">Now Playing</h2>
+    <h2 className="md:text-4xl py-4 px-10 font-manrope text-lg">Now Playing</h2>
   </motion.div>
   )
 }
