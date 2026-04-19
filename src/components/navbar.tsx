@@ -9,14 +9,13 @@ import {
 	useScroll,
 	useMotionValueEvent,
 } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/utils/tailwind-config";
 
 const LINKS = [
 	{ label: "Discover", href: "/" },
 	{ label: "Book Tickets", href: "/movies" },
-	{ label: "Cinemas", href: "/book" },
 ] as const;
 
 function pathActive(href: string, pathname: string | null) {
@@ -33,7 +32,8 @@ export default function Navbar() {
 	const [mobileOpen, setMobileOpen] = useState(false);
 
 	useMotionValueEvent(scrollY, "change", (y) => {
-		setScrolled(y > 28);
+		const next = y > 28;
+		setScrolled((prev) => (prev === next ? prev : next));
 	});
 
 	useEffect(() => {
@@ -44,17 +44,34 @@ export default function Navbar() {
 		if (!mobileOpen) return;
 		const prev = document.body.style.overflow;
 		document.body.style.overflow = "hidden";
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key === "Escape") setMobileOpen(false);
+		};
+		window.addEventListener("keydown", onKey);
 		return () => {
 			document.body.style.overflow = prev;
+			window.removeEventListener("keydown", onKey);
 		};
 	}, [mobileOpen]);
 
-	const spring = reduceMotion
-		? { duration: 0.2 }
-		: { type: "spring" as const, stiffness: 420, damping: 38 };
-	const layoutSpring = reduceMotion
-		? { duration: 0 }
-		: { type: "spring" as const, stiffness: 380, damping: 34 };
+	const spring = useMemo(
+		() =>
+			reduceMotion
+				? { duration: 0.2 }
+				: { type: "spring" as const, stiffness: 420, damping: 38 },
+		[reduceMotion]
+	);
+
+	const layoutSpring = useMemo(
+		() =>
+			reduceMotion
+				? { duration: 0 }
+				: { type: "spring" as const, stiffness: 380, damping: 34 },
+		[reduceMotion]
+	);
+
+	const closeMobile = useCallback(() => setMobileOpen(false), []);
+	const toggleMobile = useCallback(() => setMobileOpen((o) => !o), []);
 
 	return (
 		<motion.header
@@ -76,7 +93,7 @@ export default function Navbar() {
 			)}
 		>
 			<motion.div
-				className="mx-auto flex max-w-[1380px] items-center justify-between px-5 md:px-10 lg:px-14"
+				className="mx-auto flex max-w-[1380px] items-center justify-between gap-3 px-5 md:px-10 lg:px-14"
 				initial={false}
 				animate={{ height: scrolled ? 60 : 68 }}
 				transition={spring}
@@ -126,9 +143,72 @@ export default function Navbar() {
 						})}
 					</ul>
 				</nav>
+
+				<button
+					type="button"
+					className="md:hidden relative z-10 inline-flex h-10 w-10 items-center justify-center rounded-lg text-white/90 hover:bg-white/[0.06] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/45"
+					aria-expanded={mobileOpen}
+					aria-controls="mobile-nav-panel"
+					aria-label={mobileOpen ? "Close menu" : "Open menu"}
+					onClick={toggleMobile}
+				>
+					{mobileOpen ? (
+						<X className="h-5 w-5" aria-hidden />
+					) : (
+						<Menu className="h-5 w-5" aria-hidden />
+					)}
+				</button>
 			</motion.div>
 
-
+			<AnimatePresence>
+				{mobileOpen && (
+					<>
+						<motion.div
+							role="presentation"
+							className="fixed inset-0 z-40 bg-black/65 md:hidden"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.2 }}
+							onClick={closeMobile}
+						/>
+						<motion.nav
+							id="mobile-nav-panel"
+							role="dialog"
+							aria-modal="true"
+							aria-label="Mobile navigation"
+							style={{ top: scrolled ? 60 : 68 }}
+							className="fixed left-0 right-0 bottom-0 z-[45] overflow-y-auto border-t border-white/[0.08] bg-[#09090f]/98 px-5 py-6 backdrop-blur-xl md:hidden"
+							initial={reduceMotion ? false : { opacity: 0, y: -12 }}
+							animate={reduceMotion ? {} : { opacity: 1, y: 0 }}
+							exit={reduceMotion ? {} : { opacity: 0, y: -12 }}
+							transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+						>
+							<ul className="flex flex-col gap-1">
+								{LINKS.map((item) => {
+									const active = pathActive(item.href, pathname);
+									return (
+										<li key={item.href}>
+											<Link
+												href={item.href}
+												onClick={closeMobile}
+												className={cn(
+													"block rounded-xl px-4 py-3 text-base font-medium font-manrope transition-colors",
+													active
+														? "bg-white/[0.08] text-white"
+														: "text-white/70 hover:bg-white/[0.05] hover:text-white",
+												)}
+											>
+												{item.label}
+											</Link>
+										</li>
+									);
+								})}
+							</ul>
+						</motion.nav>
+					</>
+				)}
+			</AnimatePresence>
 		</motion.header>
 	);
 }

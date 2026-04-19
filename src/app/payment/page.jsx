@@ -174,7 +174,7 @@ function PaymentContent() {
       amount: amountPaise,
       order_id: orderData.id,
       description: `${displayTitle} — ${selectedSeats.length} seat(s)`,
-      image: "https://manuarora.in/logo.png",
+      ...(posterSrc ? { image: posterSrc } : {}),
       handler(response) {
         setLoading(false);
         setPaymentId(response.razorpay_payment_id);
@@ -271,7 +271,7 @@ function PaymentContent() {
                     />
                     <img
                       src={posterSrc}
-                      alt=""
+                      alt={displayTitle ? `Poster: ${displayTitle}` : "Movie poster"}
                       className="relative z-10 aspect-[2/3] w-36 rounded-2xl border border-white/10 object-cover shadow-2xl md:w-44"
                     />
                   </motion.div>
@@ -380,12 +380,13 @@ function PaymentContent() {
                   )}
                 </button>
 
-                <Link
-                  href="/book"
-                  className="block text-center text-xs text-white/35 underline-offset-4 hover:text-white/55 hover:underline"
+                <button
+                  type="button"
+                  onClick={() => router.back()}
+                  className="w-full text-center text-xs text-white/35 underline-offset-4 hover:text-white/55 hover:underline"
                 >
                   ← Back to seat selection
-                </Link>
+                </button>
               </div>
             </div>
           </motion.div>
@@ -420,6 +421,24 @@ function PaymentContent() {
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
       >
         <div className="rounded-3xl border border-emerald-500/25 bg-emerald-950/20 p-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.5)] backdrop-blur-md">
+          {posterSrc ? (
+            <div className="mx-auto mb-6 flex justify-center">
+              <div className="relative">
+                <div
+                  className="absolute -inset-1 rounded-2xl opacity-50 blur-md"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, rgba(52,211,153,0.35), rgba(34,197,94,0.2))",
+                  }}
+                />
+                <img
+                  src={posterSrc}
+                  alt={displayTitle ? `Poster: ${displayTitle}` : "Movie poster"}
+                  className="relative z-10 aspect-[2/3] w-28 rounded-2xl border border-white/15 object-cover shadow-xl sm:w-32"
+                />
+              </div>
+            </div>
+          ) : null}
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}

@@ -50,7 +50,6 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${sans.variable} ${bricolage.variable} ${manrope.variable} ${poppins.variable} ${interTight.variable} antialiased bg-white`}>
-
                 <CustomNavbar />
                 <MovieContx>
                     <BookingContx>

@@ -1,5 +1,10 @@
 'use client'
-import React, { createContext, MouseEvent, useCallback } from 'react'
+import React, {
+    createContext,
+    MouseEvent,
+    useCallback,
+    useMemo,
+} from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 
@@ -123,32 +128,31 @@ export default function BookingContext(props:Props) {
         getReservedSeats()
     },[showTime, movieId, showDate, movies_data, bookingVenue])
 
-    const handleSetShowDate = (e:MouseEvent<HTMLButtonElement>,date:string)=>{
+    const handleSetShowDate = useCallback((e:MouseEvent<HTMLButtonElement>,date:string)=>{
         setShowDate(date)
-    }
-    const handleSetShow = (e: MouseEvent<HTMLButtonElement>, Time: string) => {
+    }, [])
+    const handleSetShow = useCallback((e: MouseEvent<HTMLButtonElement>, Time: string) => {
         setShowTime(Time)
-    }
+    }, [])
 
-    const handleSeatClick = (e: MouseEvent<SVGElement>, rowName: String, seatNumber: number) => {
-        let Seat: string = rowName + seatNumber.toString()
+    const handleSeatClick = useCallback((e: MouseEvent<SVGElement>, rowName: string, seatNumber: number) => {
+        const Seat: string = rowName + seatNumber.toString()
         setSelectedSeats((prevSelectedSeats) => {
             if (prevSelectedSeats.includes(Seat)) {
                 return prevSelectedSeats.filter((selectedSeat) => selectedSeat !== Seat);
-            } else {
-                return [...prevSelectedSeats, Seat];
             }
+            return [...prevSelectedSeats, Seat];
         });
-    }
+    }, [])
 
-    const handleSetMovie = (e:MouseEvent<HTMLButtonElement>,id:number)=>[
-        setMovieId(id),
+    const handleSetMovie = useCallback((e:MouseEvent<HTMLButtonElement>,id:number)=>{
+        setMovieId(id)
         router.push('/audi')
-    ]
+    }, [router])
 
-    const handleClear = (e:MouseEvent<HTMLButtonElement>) =>{
+    const handleClear = useCallback((e:MouseEvent<HTMLButtonElement>) =>{
         setSelectedSeats([])
-    }
+    }, [])
 
     const clearSeatSelection = useCallback(() => {
         setSelectedSeats([]);
@@ -166,30 +170,46 @@ export default function BookingContext(props:Props) {
         if (payload.movieTitle !== undefined) setBookingMovieTitle(payload.movieTitle);
     }, []);
 
-    const handleReset = () =>{
+    const handleReset = useCallback(() =>{
         setSelectedSeats([])
         setShowTime(null)
         setBookingVenue(null);
         setBookingMovieTitle(null);
-    }
+    }, [])
     
-    const contextValue: MyContextType = {
-        selectedSeats: selectedSeats,
-        bookedSeats:bookedSeats,
-        handleSeatClick: handleSeatClick,
-        handleClear:handleClear,
-        showTime:showTime,
-        handleSetShow:handleSetShow,
-        handleReset:handleReset,
-        movieId:movieId,
-        handleSetMovie:handleSetMovie,
-        showDate:showDate,
-        handleSetShowDate:handleSetShowDate,
+    const contextValue = useMemo<MyContextType>(() => ({
+        selectedSeats,
+        bookedSeats,
+        handleSeatClick,
+        handleClear,
+        showTime,
+        handleSetShow,
+        handleReset,
+        movieId,
+        handleSetMovie,
+        showDate,
+        handleSetShowDate,
         bookingVenue,
         bookingMovieTitle,
         clearSeatSelection,
         syncBookingSession,
-    }
+    }), [
+        selectedSeats,
+        bookedSeats,
+        handleSeatClick,
+        handleClear,
+        showTime,
+        handleSetShow,
+        handleReset,
+        movieId,
+        handleSetMovie,
+        showDate,
+        handleSetShowDate,
+        bookingVenue,
+        bookingMovieTitle,
+        clearSeatSelection,
+        syncBookingSession,
+    ])
 
     return (
         <BookingContx.Provider value={contextValue}>

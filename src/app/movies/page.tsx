@@ -1,8 +1,7 @@
 'use client';
-import React, { useContext, MouseEvent, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, type Variants } from "motion/react";
-import { BookingContx } from '@/context/BookingContext';
+import { motion, type Variants } from "motion/react";
 import { MovieContx } from '@/context/MoviesContext';
 
 interface Movie {
@@ -22,9 +21,6 @@ function movieDisplayTitle(movie: Movie) {
 
 interface MovieCardProps {
     movie: Movie;
-    index: number;
-    isSelected: boolean;
-    onBook: (e: MouseEvent<HTMLButtonElement>, index: number) => void;
 }
 
 const containerVariants = {
@@ -38,7 +34,7 @@ const cardVariants = {
 };
 
 
-function CinematicBackground() {
+const CinematicBackground = memo(function CinematicBackground() {
     return (
         <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
             {/* Base */}
@@ -116,12 +112,20 @@ function CinematicBackground() {
             />
         </div>
     );
+});
+
+function MovieSkeleton() {
+    return (
+        <div
+            className="rounded-2xl bg-white/[0.06] animate-pulse"
+            style={{ aspectRatio: '2/3' }}
+            aria-hidden
+        />
+    );
 }
 
-
-function MovieCard({ movie, index, isSelected, onBook }: MovieCardProps) {
+const MovieCard = memo(function MovieCard({ movie }: MovieCardProps) {
     const [hovered, setHovered] = useState(false);
-    const year = movie.release_date?.slice(0, 4) ?? '';
 
     return (
         <Link
@@ -138,21 +142,6 @@ function MovieCard({ movie, index, isSelected, onBook }: MovieCardProps) {
         >
 
             <div className="relative rounded-2xl overflow-hidden" style={{ aspectRatio: '2/3' }}>
-
-
-                <AnimatePresence>
-                    {isSelected && (
-                        <motion.div
-                            className="absolute -inset-[2px] rounded-2xl z-20 pointer-events-none"
-                            style={{ background: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 50%, #c026d3 100%)' }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                        >
-                            <div className="absolute inset-[2px] rounded-[14px] bg-[#09090f]" />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
 
 
                 <motion.img
@@ -192,7 +181,7 @@ function MovieCard({ movie, index, isSelected, onBook }: MovieCardProps) {
         </motion.article>
         </Link>
     );
-}
+});
 
 function EmptyState() {
     return (
@@ -213,9 +202,9 @@ function EmptyState() {
 }
 
 function MoviesPage() {
-    const { movies_data } = useContext(MovieContx);
-    const { movieId, handleSetMovie } = useContext(BookingContx);
-    const hasMovies = Array.isArray(movies_data) && movies_data.length > 0;
+    const { movies_data, movies_loading, movies_error } = useContext(MovieContx);
+    const list = Array.isArray(movies_data) ? (movies_data as Movie[]) : [];
+    const hasMovies = list.length > 0;
 
     return (
         <>
@@ -239,7 +228,22 @@ function MoviesPage() {
                         </h1>
                     </motion.header>
 
-                    {hasMovies ? (
+                    {movies_loading ? (
+                        <section aria-busy="true" aria-label="Loading films">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10">
+                                {Array.from({ length: 12 }, (_, i) => (
+                                    <MovieSkeleton key={i} />
+                                ))}
+                            </div>
+                        </section>
+                    ) : movies_error ? (
+                        <div
+                            role="alert"
+                            className="rounded-2xl border border-red-500/25 bg-red-500/10 px-6 py-8 text-center text-red-200/90 text-sm max-w-md mx-auto"
+                        >
+                            {movies_error}
+                        </div>
+                    ) : hasMovies ? (
                         <section>
                             <motion.div
                                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-6 gap-y-10"
@@ -247,13 +251,10 @@ function MoviesPage() {
                                 initial="hidden"
                                 animate="show"
                             >
-                                {movies_data.map((movie: Movie, index: number) => (
+                                {list.map((movie) => (
                                     <MovieCard
-                                        key={index}
+                                        key={movie.id}
                                         movie={movie}
-                                        index={index}
-                                        isSelected={movieId === index}
-                                        onBook={(e, idx) => handleSetMovie(e, idx)}
                                     />
                                 ))}
                             </motion.div>
